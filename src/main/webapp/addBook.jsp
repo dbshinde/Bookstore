@@ -31,7 +31,7 @@
 			<%
 				for (String error : errorMsgs) {
 			%>
-			<p><%=error%></p>
+			<p><font color="red"><%=error%></font></p>
 			<%
 				}
 			%>

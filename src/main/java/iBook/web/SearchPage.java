@@ -5,7 +5,9 @@ import iBook.dao.factory.DaoFactory;
 import iBook.domain.Book;
 import iBook.domain.Category;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Bean respoonsible for Book Search.
@@ -31,6 +33,9 @@ public class SearchPage extends Form {
      * Parameter specifying that no category is selected.
      */
     public static final String NO_CATEGORY = "no_cat";
+    
+    
+    public static final String SEARCH_RESULT_PAGE = "searchListBooks.jsp";
 
     private List<Book> searchedBookList = null;
 
@@ -39,15 +44,26 @@ public class SearchPage extends Form {
         String title = getParameter(PARAM_TITLE);
         String author = getParameter(PARAM_AUTHOR);
         String category = getParameter(PARAM_CATEGORY);
-        String bestSeller = getParameter(PARAM_BESTSELLER);
-
-        if((title == null || title.isEmpty()) && (author == null || author.isEmpty()) && (category.equals(NO_CATEGORY)) &&
-                (bestSeller == null)) {
-            searchedBookList = DaoFactory.getInstance().getBookDao().getAllBooks();
+        Boolean bestSeller = Boolean.parseBoolean(getParameter(PARAM_BESTSELLER));
+        if((category != null && !category.equals(NO_CATEGORY) && !category.equals("")) && (title != null && !title.isEmpty() || author!= null && !author.isEmpty())) 
+        {
+        	Map<String, Object> criteria  = new HashMap<String, Object>();
+        	criteria.put(PARAM_TITLE, title);
+        	criteria.put(PARAM_CATEGORY, category);
+        	criteria.put(PARAM_BESTSELLER, bestSeller);
+        	criteria.put(PARAM_AUTHOR, author);
+        	searchedBookList = DaoFactory.getInstance().getBookDao().getBooksByCriterias(criteria);
+        	session.setAttribute("data", searchedBookList);
+            
         } else {
-
+        	searchedBookList = DaoFactory.getInstance().getBookDao().getAllBooks();
+            session.setAttribute("data", searchedBookList);
         }
 
+        if( searchedBookList != null){
+			response.sendRedirect(SEARCH_RESULT_PAGE);
+			return;
+        }
     }
 
     /**

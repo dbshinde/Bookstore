@@ -5,6 +5,7 @@ import iBook.domain.Author;
 import iBook.domain.Book;
 import iBook.domain.Category;
 import iBook.utils.Utils;
+import iBook.web.SearchPage;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Map;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -85,15 +87,26 @@ public class BookDaoImpl implements BookDao {
 	}
 
     @Override
-	public List<Book> getBooksByCriterias(Map<String, String> criteria) {
+	public List<Book> getBooksByCriterias(Map<String, Object> criteria) {
         Session session = Utils.getInstance().openTransaction();
-
         Criteria criteriaObj = session.createCriteria(Book.class);
-        for(Map.Entry<String, String> cr : criteria.entrySet()) {
-            criteriaObj.add(Restrictions.like(cr.getKey(), cr.getValue()));
+        if( criteria.containsKey(SearchPage.PARAM_CATEGORY) &&  criteria.get(SearchPage.PARAM_CATEGORY) != null &&  criteria.get(SearchPage.PARAM_CATEGORY) != "")
+        {
+        	Integer[] arr = {Integer.parseInt(((String) criteria.get(SearchPage.PARAM_CATEGORY)).split(",")[0])};
+        	criteriaObj.add(Restrictions.conjunction().add(Restrictions.in("category.id", arr)));
+        	criteria.remove(SearchPage.PARAM_CATEGORY);
         }
-
-        List resultList = criteriaObj.setCacheable(true).list();
+        
+        if( criteria.containsKey(SearchPage.PARAM_TITLE) &&  criteria.get(SearchPage.PARAM_TITLE) != null &&  criteria.get(SearchPage.PARAM_TITLE) != "")
+        {
+        	criteriaObj.add(Restrictions.ilike(SearchPage.PARAM_TITLE, "%"+ criteria.get(SearchPage.PARAM_TITLE) +"%"));
+        }
+        if( criteria.containsKey(SearchPage.PARAM_BESTSELLER) &&  criteria.get(SearchPage.PARAM_BESTSELLER) != null &&  criteria.get(SearchPage.PARAM_BESTSELLER) != "")
+        {
+        	criteriaObj.add(Restrictions.eq(SearchPage.PARAM_BESTSELLER, criteria.get(SearchPage.PARAM_BESTSELLER)));
+        }
+        
+        List<Book> resultList = criteriaObj.setCacheable(true).list();
         Utils.getInstance().commitTransaction(session);
 
         return (List<Book>) resultList;
@@ -112,6 +125,22 @@ public class BookDaoImpl implements BookDao {
         Utils.getInstance().commitTransaction(session);
 
         return books;
+	}
+	
+	public List<Book> searchBooks( String title) {
+		
+		Session session = Utils.getInstance().openTransaction();
+		Criteria cr = session.createCriteria(Book.class);
+		/*Criterion price = Restrictions.gt("price", 200);
+		Criterion authoro = Restrictions.ilike("author", "%"+author+"%");
+		LogicalExpression andExp = Restrictions.and(price, authoro);
+		cr.add( andExp );*/
+		LogicalExpression orExp = Restrictions.or(Restrictions.ilike("title", "%"+title+"%"), Restrictions.ilike("title", "%"+title+"%"));
+		cr.add( orExp );
+		//cr.add(Restrictions.ilike("author", "%"+author+"%"));
+		return cr.list();
+		/*return sessionFactory.getCurrentSession()
+			.createQuery("from Book b where b.author LIKE :author").setParameter("author", "%"+author+"%").list();*/
 	}
 
 }

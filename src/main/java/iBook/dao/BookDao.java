@@ -63,5 +63,5 @@ public interface BookDao {
      * @param criteria      criterias map.
      * @return              the list of books.
      */
-    public List<iBook.domain.Book> getBooksByCriterias(Map<String, String> criteria);
+    public List<iBook.domain.Book> getBooksByCriterias(Map<String, Object> criteria);
 }

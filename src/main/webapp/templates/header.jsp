@@ -17,7 +17,10 @@
             if (obj.value == "") {
                 if (obj.name == "username") {
                     obj.value = "UserName";
-                } else {
+                } else if( obj.name == "title"){
+                    obj.value = "Enter pattern to search";
+                }
+                else {
                     obj.value = "Password";
                 }
             }

@@ -25,7 +25,7 @@
 					<label for="<%=SearchPage.PARAM_TITLE%>">Title:</label> 
 				</td>
 				<td align="left">
-					<input type="text" name="<%=SearchPage.PARAM_TITLE%>" value="" style="margin-left: 24px; margin-top: 15px;margin-bottom: 15px; width:175px;">
+					<input type="text" name="<%=SearchPage.PARAM_TITLE%>" value="" onfocus="removePreDefText(this)" onblur="applyDefaultText(this)" style="margin-left: 24px; margin-top: 15px;margin-bottom: 15px; width:175px;color: grey;">
 				</td> 
 			</tr>
 			

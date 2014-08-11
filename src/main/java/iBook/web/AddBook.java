@@ -2,11 +2,13 @@ package iBook.web;
 
 import iBook.dao.CategoryDao;
 import iBook.dao.factory.DaoFactory;
+import iBook.domain.Author;
 import iBook.domain.Authors2Books;
 import iBook.domain.Book;
 import iBook.domain.Category;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,13 +59,13 @@ public class AddBook extends Form {
     {
     	String title = getParameter(PARAM_TITLE);
     	String author = getParameter(PARAM_AUTHOR);
-    	String category = getParameter(PARAM_CATEGORY);
+    	Integer category = getIntParameter(PARAM_CATEGORY);
     	String bestSeller = getParameter(PARAM_BESTSELLER);
-    	String publishDate = getParameter(PARAM_PUBLISH_DATE);
-    	String pages = getParameter(PARAM_PAGES);
+    	Integer publishDate = getIntParameter(PARAM_PUBLISH_DATE);
+    	Integer pages = getIntParameter(PARAM_PAGES);
     	String price = getParameter(PARAM_PRICE);
     	String description = getParameter(PARAM_DESCRIPTION);
-
+    	
     	List<String> errorMsgs = validateForm();
     	if(errorMsgs.isEmpty())
     	{
@@ -73,8 +75,10 @@ public class AddBook extends Form {
 
     	}
     	else {
-    		request.setAttribute("errorMsgs", errorMsgs);
-    		request.getRequestDispatcher(ADD_BOOK_URL).forward(request, response);
+    		//response.sendRedirect(response.encodeRedirectURL(ADD_BOOK_URL));
+    		request.setAttribute(ERROR_MSGS, errorMsgs);
+			request.getRequestDispatcher(ADD_BOOK_URL).forward(request, response);
+    		//request.getRequestDispatcher(ADD_BOOK_URL).forward(request, response);
     	}
 
     }

@@ -89,7 +89,7 @@
 			</p>
 			<p>
 				<label for="<%=AddBook.PARAM_BESTSELLER%>">Bestseller: </label> <input
-					type="checkbox" name="<%=AddBook.PARAM_BESTSELLER%>" value=""
+					type="checkbox" name="<%=AddBook.PARAM_BESTSELLER%>" value="true"
 					style="margin-left: 114px; margin-bottom: 20px;">
 			</p>
 			<input type="hidden" name="<%=AddBook.PARAM_IS_SUBMITTED%>"

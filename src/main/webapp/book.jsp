@@ -5,12 +5,29 @@
 <%@ page import="iBook.web.BookPage" %>
 <%@ page import="iBook.domain.Authors2Books" %>
 <%@ page import="java.util.Set" %>
+<%@ page import="iBook.domain.User"%>
+<%@ page import="iBook.web.LoginPage"%>
+
 <%
     bookPage.init(request, response, session);
 
     Book currentBook = Utils.getInstance().getBookById(bookPage.getIntParameter(BookPage.PARAM_BOOK_ID));
 %>
-<jsp:include page="templates/header.jsp" />
+<%
+     User loggedInUser = (User) session.getAttribute(LoginPage.LOGGED_IN_USER);
+     if (loggedInUser != null && loggedInUser.getIsAdmin() =='T') 
+     {
+	 	%>
+	 		<jsp:include page="templates/adminHeader.jsp" />
+	  	<%
+ 	 } 
+     else 
+     {
+	    %>
+	    	<jsp:include page="templates/header.jsp" />
+	    <%
+     }
+%>
 
 <div id="templatemo_content">
 
@@ -45,10 +62,16 @@
         <p><%=currentBook.getDescription()%></p>
 
         <div class="cleaner_with_height">&nbsp;</div>
-        <div class="buy_now_button" style="float: right;">
-            <a href="buy.jsp?<%= BuyPage.PARAM_BOOK_ID %>=<%=currentBook.getId()%>">Add To Card</a>
-        </div>
+        
         <%
+		     if (!(loggedInUser != null && loggedInUser.getIsAdmin() =='T')) 
+		     {
+			 	%>
+			        <div class="buy_now_button" style="float: right;">
+			            <a href="buy.jsp?<%= BuyPage.PARAM_BOOK_ID %>=<%=currentBook.getId()%>">Add To Card</a>
+			        </div>
+        		<%
+		 	 } 
         } else {
         %>
         <div style="height: 210px;"><h1>Sorry, this book was not found in our library!</h1></div>

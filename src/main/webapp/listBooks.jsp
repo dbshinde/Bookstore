@@ -1,14 +1,31 @@
 <jsp:useBean id="bookPage" class="iBook.web.BookPage" />
 <%@ page import="iBook.domain.Book"%>
+<%@ page import="iBook.web.BookPage"%>
 <%@ page import="iBook.web.BuyPage"%>
 <%@ page import="java.util.List"%>
 <%@ page import="iBook.domain.Authors2Books" %>
 <%@ page import="java.util.Set" %>
+<%@ page import="iBook.domain.User"%>
+<%@ page import="iBook.web.LoginPage"%>
 
 <%
 bookPage.init(request, response, session);
 %>
-<jsp:include page="templates/header.jsp" />
+<%
+     User loggedInUser = (User) session.getAttribute(LoginPage.LOGGED_IN_USER);
+     if (loggedInUser != null && loggedInUser.getIsAdmin() =='T') 
+     {
+	 	%>
+	 		<jsp:include page="templates/adminHeader.jsp" />
+	  	<%
+ 	 } 
+     else 
+     {
+	    %>
+	    	<jsp:include page="templates/header.jsp" />
+	    <%
+     }
+%>
 
 <div id="templatemo_content">
 
@@ -44,9 +61,25 @@ bookPage.init(request, response, session);
 				</p>
 				<h3>
 					$<%=book.getPrice()%></h3>
-				<div class="buy_now_button">
-					<a href="buy.jsp?<%= BuyPage.PARAM_BOOK_ID %>=<%=book.getId()%>">Add to Card</a>
-				</div>
+					<%
+						if (loggedInUser != null && loggedInUser.getIsAdmin() =='T')
+					    {
+						 	%>
+						        <div class="edit_button">
+									<a href="book.jsp?<%= BookPage.PARAM_BOOK_ID%>=<%=book.getId()%>">Edit</a>
+								</div>
+			        		<%
+					 	} 
+						else 
+						{
+					        %>
+					        <div class="buy_now_button">
+									<a href="buy.jsp?<%= BuyPage.PARAM_BOOK_ID %>=<%=book.getId()%>">Add to Card</a>
+							</div>
+					        <%
+					    }
+					%>
+					
 				<div class="detail_button">
 					<a href="book.jsp?id=<%=book.getId()%>">Detail</a>
 				</div>

@@ -1,8 +1,9 @@
 <jsp:useBean id="searchPage" class="iBook.web.SearchPage" />
 <%@ page import="iBook.domain.Book"%>
+<%@ page import="iBook.web.BookPage"%>
 <%@ page import="iBook.web.BuyPage"%>
 <%@ page import="java.util.List"%>
-<%@ page import="iBook.domain.Authors2Books" %>
+<%@ page import="iBook.domain.Author" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="iBook.domain.User"%>
 <%@ page import="iBook.web.LoginPage"%>
@@ -36,12 +37,9 @@ searchPage.init(request, response, session);
 		if(data != null && !data.isEmpty()){
 			for (int i = 1; i <= data.size(); i++) {
 				Book book = data.get(i - 1);
-                Set<Authors2Books> authors2BooksSet = book.getAuthor();
+				Author authors2Book = book.getAuthor();
                 StringBuffer authors = new StringBuffer();
-                for(Authors2Books authors2Books : authors2BooksSet) {
-                    authors.append(authors2Books.getAuthor().getAuthorName()).append(",");
-                }
-                authors.deleteCharAt(authors.length() - 1);
+                authors.append(authors2Book.getAuthorName());
 		%>
 		<div class="templatemo_product_box">
 			<h1><%=((book.getTitle() != null && book.getTitle().length() > 15) ? book
@@ -60,9 +58,24 @@ searchPage.init(request, response, session);
 				</p>
 				<h3>
 					$<%=book.getPrice()%></h3>
-				<div class="buy_now_button">
-					<a href="buy.jsp?<%= BuyPage.PARAM_BOOK_ID %>=<%=book.getId()%>">Add to Card</a>
-				</div>
+					<%
+						if (loggedInUser != null && loggedInUser.getIsAdmin() =='T')
+					    {
+						 	%>
+						        <div class="edit_button">
+									<a href="editBook.jsp?<%= BookPage.PARAM_BOOK_ID%>=<%=book.getId()%>">Edit</a>
+								</div>
+			        		<%
+					 	} 
+						else 
+						{
+					        %>
+					        <div class="buy_now_button">
+									<a href="buy.jsp?<%= BuyPage.PARAM_BOOK_ID %>=<%=book.getId()%>">Add to Card</a>
+							</div>
+					        <%
+					    }
+					%>
 				<div class="detail_button">
 					<a href="book.jsp?id=<%=book.getId()%>">Detail</a>
 				</div>

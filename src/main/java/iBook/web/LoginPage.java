@@ -29,6 +29,8 @@ public class LoginPage extends Form {
      * Parameter specifying that error occurred.
      */
 	public static final String PARAM_ERROR_MSG = "error";
+	
+	public static final String IS_ADMIN = "isAdmin";
 
 	@Override
 	public void submit() throws Exception {
@@ -38,7 +40,7 @@ public class LoginPage extends Form {
             UserDao userInterface = DaoFactory.getInstance().getUserDao();
             User user = null;
             if(userInterface != null) {
-            	if( Boolean.TRUE.toString().equals(getParameter("isAdmin")))
+            	if( Boolean.TRUE.toString().equals(getParameter(IS_ADMIN)))
             	{
             		user = userInterface.adminLogin(getParameter(PARAM_USER_NAME), password);
             	}
@@ -46,7 +48,7 @@ public class LoginPage extends Form {
             		user = userInterface.getUserByCredentials(getParameter(PARAM_USER_NAME), password);
             }
 
-            if( user != null &&  Boolean.TRUE.toString().equals(getParameter("isAdmin")))
+            if( user != null &&  Boolean.TRUE.toString().equals(getParameter(IS_ADMIN)))
             {
             	session.removeAttribute(ERROR_MSG);
 				session.setAttribute(LOGGED_IN_USER, user);
@@ -60,7 +62,7 @@ public class LoginPage extends Form {
 				return;
 			} 
 		} 
-		 if( Boolean.TRUE.toString().equals(getParameter("isAdmin")))
+		 if( Boolean.TRUE.toString().equals(getParameter(IS_ADMIN)))
 			 response.sendRedirect(response.encodeRedirectURL(ADMIN_INDEX_URL + "?" + PARAM_ERROR_MSG + "=true"));
 		 else
 			 response.sendRedirect(response.encodeRedirectURL(INDEX_URL + "?" + PARAM_ERROR_MSG + "=true"));

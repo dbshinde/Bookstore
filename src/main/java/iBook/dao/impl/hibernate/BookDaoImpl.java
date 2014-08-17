@@ -27,12 +27,19 @@ public class BookDaoImpl implements BookDao {
 	public void save(Book book) {
         Session session = Utils.getInstance().openTransaction();
 
-        book = (Book) session.merge(book);
+        session.saveOrUpdate(book);
 
         Utils.getInstance().commitTransaction(session);
 	}
 
-	
+	@Override
+	public void update(Book book) {
+        Session session = Utils.getInstance().openTransaction();
+
+        session.merge(book);
+
+        Utils.getInstance().commitTransaction(session);
+	} 
     @Override
 	public Book getBookById(int id) {
         Session session = Utils.getInstance().openTransaction();
@@ -43,6 +50,15 @@ public class BookDaoImpl implements BookDao {
         return (book != null ? (Book) book : null);
 	}
 
+    public Author getAuthorById(int id) {
+        Session session = Utils.getInstance().openTransaction();
+        Object author = session.get(Author.class, id);
+
+        Utils.getInstance().commitTransaction(session);
+
+        return (author != null ? (Author) author : null);
+	}
+    
     @Override
 	public List<Book> getBooksByAuthorId(Author author) {
         Session session = Utils.getInstance().openTransaction();

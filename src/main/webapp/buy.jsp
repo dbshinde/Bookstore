@@ -2,7 +2,7 @@
 <%@ page import="iBook.domain.Book"%>
 <%@ page import="iBook.web.BuyPage"%>
 <%@ page import="iBook.utils.Utils" %>
-<%@ page import="iBook.domain.Authors2Books" %>
+<%@ page import="iBook.domain.Author" %>
 <%@ page import="java.util.Set" %>
 <%
 	buyPage.init(request, response, session);
@@ -26,12 +26,9 @@
 		<%
 			Book currentBook = Utils.getInstance().getBookById(buyPage.getIntParameter(BuyPage.PARAM_BOOK_ID));
 			if (currentBook != null) {
-                Set<Authors2Books> authors2BooksSet = currentBook.getAuthor();
+				Author authors2Book = currentBook.getAuthor();
                 StringBuffer authors = new StringBuffer();
-                for(Authors2Books authors2Books : authors2BooksSet) {
-                    authors.append(authors2Books.getAuthor().getAuthorName()).append(",");
-                }
-                authors.deleteCharAt(authors.length() - 1);
+                authors.append(authors2Book.getAuthorName());
 		%>
 		<h1><%=currentBook.getTitle()%>
 			<span>(by <%=authors.toString()%>)

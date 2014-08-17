@@ -23,6 +23,7 @@ public abstract class Page {
 	public static final String ADMIN_DASHBOARD_URL = "adminDashboard.jsp";
 	public static final String ADMIN_INDEX_URL = "admin.jsp";
 	public static final String ADD_BOOK_URL = "addBook.jsp";
+	public static final String EDIT_BOOK_URL = "editBook.jsp";
 	
 	/**
 	 * Initializes the http related stuff.

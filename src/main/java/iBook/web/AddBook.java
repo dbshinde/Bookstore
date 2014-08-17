@@ -52,7 +52,14 @@ public class AddBook extends Form {
 
     public static final String ERROR_MSGS = "errorMsgs";
     
+    public static final String PARAM_BOOK_ID = "id";
+    
+    public static final String PARAM_AUTHOR_ID = "authorId";
+    
+    public static final String EDIT_BOOK = "editBook";
+    
     private List<Book> searchedBookList = null;
+    
 
     @Override
     public void submit() throws Exception 
@@ -65,22 +72,64 @@ public class AddBook extends Form {
     	Integer pages = getIntParameter(PARAM_PAGES);
     	String price = getParameter(PARAM_PRICE);
     	String description = getParameter(PARAM_DESCRIPTION);
-    	
+    	boolean editBook = Boolean.parseBoolean(getParameter(EDIT_BOOK));
+    	Integer bookId = getIntParameter(PARAM_BOOK_ID);
+    	Integer authorId = getIntParameter(PARAM_AUTHOR_ID);
     	List<String> errorMsgs = validateForm();
-    	if(errorMsgs.isEmpty())
-    	{
-    		Book book = new Book();
-    		DaoFactory.getInstance().getBookDao().save(book);
-    		response.sendRedirect(ADMIN_DASHBOARD_URL);
+    	
+    	if( editBook )
+		{
+    		if(errorMsgs.isEmpty())
+        	{
+        		Book book = DaoFactory.getInstance().getBookDao().getBookById(bookId);
+        		Author authorObj = DaoFactory.getInstance().getBookDao().getAuthorById(authorId);
+        		if( authorObj == null || !authorObj.getAuthorName().equals(author))
+        		{
+        			authorObj = new Author(author);
+        		}
 
-    	}
-    	else {
-    		//response.sendRedirect(response.encodeRedirectURL(ADD_BOOK_URL));
-    		request.setAttribute(ERROR_MSGS, errorMsgs);
-			request.getRequestDispatcher(ADD_BOOK_URL).forward(request, response);
-    		//request.getRequestDispatcher(ADD_BOOK_URL).forward(request, response);
-    	}
-
+        		book.setBestSeller(Boolean.parseBoolean(bestSeller));
+        		book.setCategory(DaoFactory.getInstance().getCategoryDao().getCategoryById(category));
+        		book.setDescription(description);
+        		book.setPages(pages);
+        		book.setPrice(Double.parseDouble(price));
+        		book.setPublishDate(publishDate);
+        		book.setTitle(title);
+        		//book.setAuthor(authorObj);
+        		DaoFactory.getInstance().getBookDao().update(book);
+        		response.sendRedirect(ADMIN_DASHBOARD_URL);
+        	}
+        	else 
+        	{
+        		request.setAttribute(ERROR_MSGS, errorMsgs);
+    			request.getRequestDispatcher(EDIT_BOOK_URL).forward(request, response);
+        	}
+		}
+		else
+		{
+			if(errorMsgs.isEmpty())
+	    	{
+	    		Book book = new Book();
+	    		Author authorObj = new Author(author);
+	    		
+	    		book.setBestSeller(Boolean.parseBoolean(bestSeller));
+	    		book.setCategory(DaoFactory.getInstance().getCategoryDao().getCategoryById(category));
+	    		book.setDescription(description);
+	    		book.setPages(pages);
+	    		book.setPrice(Double.parseDouble(price));
+	    		book.setPublishDate(publishDate);
+	    		book.setTitle(title);
+	    		book.setAuthor(authorObj);
+	    		DaoFactory.getInstance().getBookDao().save(book);
+	    		response.sendRedirect(ADMIN_DASHBOARD_URL);
+	    	}
+	    	else {
+	    		//response.sendRedirect(response.encodeRedirectURL(ADD_BOOK_URL));
+	    		request.setAttribute(ERROR_MSGS, errorMsgs);
+				request.getRequestDispatcher(ADD_BOOK_URL).forward(request, response);
+	    		//request.getRequestDispatcher(ADD_BOOK_URL).forward(request, response);
+	    	}
+		}
     }
 
     /**

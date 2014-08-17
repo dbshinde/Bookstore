@@ -3,7 +3,7 @@
 <%@ page import="iBook.web.BookPage"%>
 <%@ page import="iBook.web.BuyPage"%>
 <%@ page import="java.util.List"%>
-<%@ page import="iBook.domain.Authors2Books" %>
+<%@ page import="iBook.domain.Author" %>
 <%@ page import="java.util.Set" %>
 
 <%
@@ -30,12 +30,9 @@
 			List<Book> coverBooks = loginPage.getCoverBooks();
 			for (int i = 1; i <= coverBooks.size(); i++) {
 				Book book = coverBooks.get(i - 1);
-                Set<Authors2Books> authors2BooksSet = book.getAuthor();
+				Author authors2Book = book.getAuthor();
                 StringBuffer authors = new StringBuffer();
-                for(Authors2Books authors2Books : authors2BooksSet) {
-                    authors.append(authors2Books.getAuthor().getAuthorName()).append(",");
-                }
-                authors.deleteCharAt(authors.length() - 1);
+                authors.append(authors2Book.getAuthorName());
 		%>
 		<div class="templatemo_product_box">
 			<h1><%=((book.getTitle() != null && book.getTitle().length() > 15) ? book

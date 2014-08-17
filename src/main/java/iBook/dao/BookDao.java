@@ -64,4 +64,10 @@ public interface BookDao {
      * @return              the list of books.
      */
     public List<iBook.domain.Book> getBooksByCriterias(Map<String, Object> criteria);
+    
+    
+    public void update(Book book);
+    
+    
+    public Author getAuthorById(int id);
 }

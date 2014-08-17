@@ -3,7 +3,7 @@
 <%@ page import="iBook.web.BuyPage"%>
 <%@ page import="iBook.utils.Utils" %>
 <%@ page import="iBook.web.BookPage" %>
-<%@ page import="iBook.domain.Authors2Books" %>
+<%@ page import="iBook.domain.Author" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="iBook.domain.User"%>
 <%@ page import="iBook.web.LoginPage"%>
@@ -37,12 +37,9 @@
         <a href="javascript: history.back()" style="margin-left: 620px;">Back</a>
         <%
             if (currentBook != null) {
-                Set<Authors2Books> authors2BooksSet = currentBook.getAuthor();
+            	Author authors2Book = currentBook.getAuthor();
                 StringBuffer authors = new StringBuffer();
-                for(Authors2Books authors2Books : authors2BooksSet) {
-                    authors.append(authors2Books.getAuthor().getAuthorName()).append(",");
-                }
-                authors.deleteCharAt(authors.length() - 1);
+                authors.append(authors2Book.getAuthorName());
         %>
         <h1><%=currentBook.getTitle()%>
 			<span>(by <%= authors.toString()%>)
